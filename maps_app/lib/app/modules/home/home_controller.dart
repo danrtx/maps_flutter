@@ -46,9 +46,16 @@ class HomeController extends GetxController {
     if (Get.arguments != null) {
       final args = Get.arguments as Map<String, dynamic>;
       if (args.containsKey('latitude') && args.containsKey('longitude')) {
+        final lat = args['latitude'] as double;
+        final lng = args['longitude'] as double;
         final zoom = args.containsKey('zoom') ? args['zoom'] as double : 15.0;
+        
+        // Actualizar la ubicación actual y mover el mapa
+        currentLocation.value = LatLng(lat, lng);
         _mapController!.move(currentLocation.value, zoom);
-        updateMarkers();
+        
+        // Actualizar los marcadores después de mover el mapa
+        addMarker(currentLocation.value, args['title'] ?? 'Ubicación');
         return;
       }
     }
@@ -212,6 +219,45 @@ class HomeController extends GetxController {
     
     // Cargar ubicaciones guardadas
     loadSavedLocations();
+  }
+  
+  // Método para añadir un marcador específico
+  void addMarker(LatLng position, String title) {
+    markers.clear();
+    
+    markers.add(
+      Marker(
+        point: position,
+        width: 80,
+        height: 80,
+        child: Column(
+          children: [
+            const Icon(
+              Icons.place,
+              color: Colors.red,
+              size: 30,
+            ),
+            Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 2,
+                  )
+                ]
+              ),
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: 12),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
   
   // Método para cargar ubicaciones guardadas desde Supabase

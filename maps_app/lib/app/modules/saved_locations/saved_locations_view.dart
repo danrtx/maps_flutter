@@ -81,7 +81,6 @@ class SavedLocationsView extends GetView<SavedLocationsController> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () => controller.navigateToMap(location),
-                trailing: const Icon(Icons.arrow_forward_ios),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
